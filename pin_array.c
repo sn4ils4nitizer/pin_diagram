@@ -31,3 +31,29 @@ void set_pin(Pin *pin_array, int pin_num, const char *desc){
   pin_array[pin_num - 1].description = strdup(desc);
 }
 
+int read_pin_diagram() {
+
+  FILE *fptr;
+  fptr = fopen("pindiagram.txt", "r");
+
+  if (fptr == NULL) {
+    perror("Failed to read the file.");
+    return -1;
+  }
+
+  char *line = NULL;
+  size_t line_len = 0;
+  
+  while(getline(&line, &line_len, fptr) != -1) {
+    char *token = strtok(line, " ");
+    if(token != NULL) {
+      int pin = atoi(token);
+      char *desc = strtok(NULL, "\n");
+      if(desc != NULL) {
+        set_pin(pin_array, pin, desc);
+      }
+    }
+  }
+  
+  return 0;
+}
