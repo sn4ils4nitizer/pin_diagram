@@ -28,7 +28,7 @@ void set_pin(Pin *pin_array, int pin_num, const char *desc){
   }
 
   free(pin_array[pin_num].description);
-  pin_array[pin_num - 1].description = strdup(desc);
+  pin_array[pin_num].description = strdup(desc);
 }
 
 int read_pin_diagram() {
@@ -39,7 +39,7 @@ int read_pin_diagram() {
   if (fptr == NULL) {
     perror("Failed to read the file.");
     return -1;
-  }
+ }
 
   char *line = NULL;
   size_t line_len = 0;
@@ -54,6 +54,27 @@ int read_pin_diagram() {
       }
     }
   }
-  
+
+  free(line);
+  fclose(fptr);
   return 0;
+}
+
+int write_pin_diagram() {
+
+  FILE *fptr;
+  fptr = fopen("pin_diagram.txt", "w");
+
+  if (fptr == NULL) {
+    perror("Failed to write file.");
+    return -1;
+  }
+
+  for (int i = 0; i < PIN_AMOUNT; i++ ) {
+    fprintf(fptr, "%d %s\n", pin_array[i].pin_num + 1, pin_array[i].description);
+  }
+
+  fclose(fptr);
+  return 0;
+
 }
